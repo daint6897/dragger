@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+
     <div class="content_wrap">
       <div class="content_left">
         <div

@@ -121,21 +121,21 @@ export function compact(layout: Layout, verticalCompact: Boolean): Layout {
  * Compact an item in the layout.
  */
 export function compactItem(compareWith: Layout, l: LayoutItem, verticalCompact: boolean): LayoutItem {
-    if (verticalCompact) {
-        // Move the element up as far as it can go without colliding.
-        // while (l.y > 0 && !getFirstCollision(compareWith, l)) {
-        //   l.y--;
-        // }
-        while (l.x > 0 && !getFirstCollision(compareWith, l)) {
-            l.x--;
-        }
-    }
-
-    // Move it down, and keep moving it down if it's colliding.
-    let collides;
-    while ((collides = getFirstCollision(compareWith, l))) {
-        l.x = collides.x + collides.w;
-    }
+    // if (verticalCompact) {
+    //     // Move the element up as far as it can go without colliding.
+    //     // while (l.y > 0 && !getFirstCollision(compareWith, l)) {
+    //     //   l.y--;
+    //     // }
+    //     while (l.x > 0 && !getFirstCollision(compareWith, l)) {
+    //         l.x--;
+    //     }
+    // }
+    //
+    // // Move it down, and keep moving it down if it's colliding.
+    // let collides;
+    // while ((collides = getFirstCollision(compareWith, l))) {
+    //     l.x = collides.x + collides.w;
+    // }
     return l;
 }
 

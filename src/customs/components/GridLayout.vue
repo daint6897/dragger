@@ -2,13 +2,14 @@
   <div ref="item" class="vue-grid-layout" :style="mergedStyle">
     <slot></slot>
     <grid-item
-      class="vue-grid-placeholder"
-      v-show="isDragging"
-      :x="placeholder.x"
-      :y="placeholder.y"
-      :w="placeholder.w"
-      :h="placeholder.h"
-      :i="placeholder.i"
+        class="vue-grid-placeholder"
+        v-show="isDragging"
+        :x="placeholder.x"
+        :y="placeholder.y"
+        :w="placeholder.w"
+        :h="placeholder.h"
+        :i="placeholder.i"
+        :verticalCompact=verticalCompact"
     ></grid-item>
   </div>
 </template>
@@ -116,13 +117,13 @@ export default {
     breakpoints: {
       type: Object,
       default: function () {
-        return { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 };
+        return {lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0};
       },
     },
     cols: {
       type: Object,
       default: function () {
-        return { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 };
+        return {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2};
       },
     },
     preventCollision: {
@@ -161,6 +162,8 @@ export default {
     };
 
     self.dragEventHandler = function (eventType, i, x, y, h, w) {
+      console.log("dragEventHandler",eventType)
+
       self.dragEvent(eventType, i, x, y, h, w);
     };
 
@@ -197,7 +200,6 @@ export default {
 
         //self.width = self.$el.offsetWidth;
         addWindowEventListener("resize", self.onWindowResize);
-
         compact(self.layout, self.verticalCompact);
 
         self.$emit("layout-updated", self.layout);
@@ -317,9 +319,9 @@ export default {
     },
     onWindowResize: function () {
       if (
-        this.$refs !== null &&
-        this.$refs.item !== null &&
-        this.$refs.item !== undefined
+          this.$refs !== null &&
+          this.$refs.item !== null &&
+          this.$refs.item !== undefined
       ) {
         this.width = this.$refs.item.offsetWidth;
       }
@@ -330,17 +332,18 @@ export default {
       // console.log("bottom: " + bottom(this.layout))
       // console.log("rowHeight + margins: " + (this.rowHeight + this.margin[1]) + this.margin[1])
       const containerHeight =
-        bottom(this.layout) * (this.rowHeight + this.margin[1]) +
-        this.margin[1] +
-        "px";
+          bottom(this.layout) * (this.rowHeight + this.margin[1]) +
+          this.margin[1] +
+          "px";
       return containerHeight;
     },
     dragEvent: function (eventName, id, x, y, h, w) {
+      this.verticalCompact= false
       //console.log(eventName + " id=" + id + ", x=" + x + ", y=" + y);
       let l = getLayoutItem(this.layout, id);
       //GetLayoutItem sometimes returns null object
       if (l === undefined || l === null) {
-        l = { x: 0, y: 0 };
+        l = {x: 0, y: 0};
       }
 
       if (eventName === "dragmove" || eventName === "dragstart") {
@@ -355,6 +358,8 @@ export default {
         //this.$broadcast("updateWidth", this.width);
         this.eventBus.$emit("updateWidth", this.width);
       } else {
+        this.verticalCompact= true
+
         this.$nextTick(function () {
           this.isDragging = false;
         });
@@ -362,12 +367,13 @@ export default {
 
       // Move the element to the dragged location.
       this.layout = moveElement(
-        this.layout,
-        l,
-        x,
-        y,
-        true,
-        this.preventCollision
+          this.layout,
+          l,
+          x,
+          y,
+          true,
+          this.preventCollision,
+          this.isDraggable
       );
       compact(this.layout, this.verticalCompact);
       // needed because vue can't detect changes on array element properties
@@ -379,13 +385,13 @@ export default {
       let l = getLayoutItem(this.layout, id);
       //GetLayoutItem sometimes return null object
       if (l === undefined || l === null) {
-        l = { h: 0, w: 0 };
+        l = {h: 0, w: 0};
       }
 
       let hasCollisions;
       if (this.preventCollision) {
-        const collisions = getAllCollisions(this.layout, { ...l, w, h }).filter(
-          (layoutItem) => layoutItem.i !== l.i
+        const collisions = getAllCollisions(this.layout, {...l, w, h}).filter(
+            (layoutItem) => layoutItem.i !== l.i
         );
         hasCollisions = collisions.length > 0;
 
@@ -393,7 +399,7 @@ export default {
         if (hasCollisions) {
           // adjust w && h to maximum allowed space
           let leastX = Infinity,
-            leastY = Infinity;
+              leastY = Infinity;
           collisions.forEach((layoutItem) => {
             if (layoutItem.x > l.x) leastX = Math.min(leastX, layoutItem.x);
             if (layoutItem.y > l.y) leastY = Math.min(leastY, layoutItem.y);
@@ -447,13 +453,13 @@ export default {
 
       // Find or generate a new layout.
       let layout = findOrGenerateResponsiveLayout(
-        this.originalLayout,
-        this.layouts,
-        this.breakpoints,
-        newBreakpoint,
-        this.lastBreakpoint,
-        newCols,
-        this.verticalCompact
+          this.originalLayout,
+          this.layouts,
+          this.breakpoints,
+          newBreakpoint,
+          this.lastBreakpoint,
+          newCols,
+          this.verticalCompact
       );
 
       // Store the new layout.
@@ -468,8 +474,8 @@ export default {
 
       this.lastBreakpoint = newBreakpoint;
       this.eventBus.$emit(
-        "setColNum",
-        getColsFromBreakpoint(newBreakpoint, this.cols)
+          "setColNum",
+          getColsFromBreakpoint(newBreakpoint, this.cols)
       );
     },
 

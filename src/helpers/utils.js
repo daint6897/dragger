@@ -89,7 +89,8 @@ export function collides(l1: LayoutItem, l2: LayoutItem): boolean {
  */
 export function compact(layout: Layout, verticalCompact: Boolean): Layout {
     // Statics go in the compareWith array right away so items flow around them.
-    const compareWith = getStatics(layout);
+    const compareWith = []
+        // getStatics(layout);
     // We go through the items by row and column.
     const sorted = sortLayoutItemsByRowCol(layout);
     // Holding for new items.
@@ -228,7 +229,7 @@ export function getStatics(layout: Layout): Array<LayoutItem> {
  * @param  {Boolean}    [isUserAction] If true, designates that the item we're moving is
  *                                     being dragged/resized by th euser.
  */
-export function moveElement(layout: Layout, l: LayoutItem, x: Number, y: Number, isUserAction: Boolean, preventCollision: Boolean): Layout {
+export function moveElement(layout: Layout, l: LayoutItem, x: Number, y: Number, isUserAction: Boolean, preventCollision: Boolean,isDragger): Layout {
     if (l.static) return layout;
 
     // Short-circuit if nothing to do.

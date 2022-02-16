@@ -1,20 +1,23 @@
 <template>
-  <div ref="item" class="vue-grid-item" :class="classObj" :style="style">
-    <slot></slot>
-    <span class="remove" @click="$emit('removeItem', i)">DELETE</span>
-    <span
-      v-if="resizableAndNotStatic"
-      ref="handleResizeLeft"
-      class="resize--left"
-      :class="resizableHandleClass"
-    />
-    <span
-      v-if="resizableAndNotStatic"
-      ref="handleResizeRight"
-      class="resize--right"
-      :class="resizableHandleClass"
-    />
+  <div style="cursor: pointer">
+    <div ref="item" class="vue-grid-item" :class="classObj" :style="style">
+      <slot></slot>
+      <span class="remove" @click="$emit('removeItem', i)">DELETE</span>
+      <span
+          v-if="resizableAndNotStatic"
+          ref="handleResizeLeft"
+          class="resize--left"
+          :class="resizableHandleClass"
+      />
+      <span
+          v-if="resizableAndNotStatic"
+          ref="handleResizeRight"
+          class="resize--right"
+          :class="resizableHandleClass"
+      />
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -675,6 +678,7 @@ export default {
       const self = this;
       if (this.interactObj === null || this.interactObj === undefined) {
         this.interactObj = interact(this.$refs.item);
+
         if (!this.useStyleCursor) {
           this.interactObj.styleCursor(false);
         }
